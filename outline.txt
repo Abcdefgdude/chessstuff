@@ -1,0 +1,6 @@
+Board : 
+    Knight icon
+        Knight movement logic
+    Path Tracing
+        Move count/ numbering tiles
+    Interactive Tiles 
