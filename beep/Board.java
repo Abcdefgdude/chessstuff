@@ -30,8 +30,11 @@ public class Board extends JPanel {
                 add(boardArr[j][i]);
             }
         }
+        boardArr[0][0].visit();
+        boardArr[0][0].leave();
+        boardArr[2][0].visit();
     }
-    
+
     public void paint(Graphics g) {        
         paintComponents(g);
     }

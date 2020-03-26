@@ -26,17 +26,22 @@ public class Tile extends JPanel{
         return !(hasKnight || isNull || isVisited);
     }
     public void leave() {
+        removeAll();
         hasKnight = false;
+        color = Color.BLACK;
     }
     public void setColor(Color c) {
         color = c;
     }
 
     public void paint(Graphics g) {
-        g.setColor(canVisit() ? color : Color.BLACK);
+        //g.setColor(canVisit() ? color : Color.BLACK);
+        g.setColor(color);
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
-        if (hasKnight)
+        if (hasKnight) {
             add(new KnightIcon(), BorderLayout.CENTER);
+            paintComponents(g);
+        }
         //System.out.println("tile painted");
     }
 }
