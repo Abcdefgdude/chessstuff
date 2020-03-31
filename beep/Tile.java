@@ -3,9 +3,12 @@ import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
 public class Tile extends JPanel{
+    
     private boolean isVisited;
     private boolean hasKnight;
     private boolean isNull;
+    private boolean inRange;
+    
     private Color currentColor;
     private static Color deadColor = Color.BLACK;
     private static Color canVisitColor = Color.GREEN;
@@ -15,6 +18,7 @@ public class Tile extends JPanel{
         isVisited = false;
         hasKnight = false;
         isNull = false;
+        inRange = false;
         currentColor = Color.BLACK;
         setSize(new Dimension(20, 20));
     }
@@ -24,28 +28,28 @@ public class Tile extends JPanel{
     }
 
     public void visit() {
-        isVisited = true;
         hasKnight = true;
     }
     
-
     public void leave() {
         removeAll();
+        isVisited = true;
         hasKnight = false;
         currentColor = Color.BLACK;
     }
+    
     public boolean isVisitable() {
         return !(isNull || isVisited);
     }
 
-    public boolean inRange() {
-        return false;
+    public void isInRange(boolean in) {
+        inRange = in;
     }
     
     public Color getState() {
         if (!isVisitable())
             return deadColor;
-        if (inRange())
+        if (inRange)
             return canVisitColor;
         return currentColor;
     }

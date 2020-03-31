@@ -8,7 +8,7 @@ class Drawer extends JPanel {
         final JFrame frame = new JFrame("Chess time!");
         
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add(new Board(5, 5), BorderLayout.CENTER);
+        frame.getContentPane().add(new Board(8, 8), BorderLayout.CENTER);
 
         frame.pack();
         frame.setResizable(false);
