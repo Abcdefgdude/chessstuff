@@ -1,9 +1,11 @@
 import java.awt.*;
 import javax.swing.*;
+
 import java.util.*;
+import java.awt.event.*;
 
 @SuppressWarnings("serial")
-public class Board extends JPanel {
+public class Board extends JPanel implements ActionListener {
     
     Tile[][] boardArr;
     int moveNumber;
@@ -34,7 +36,7 @@ public class Board extends JPanel {
         // Initiliazing tile array to fill boardArr and creating maps
         for (int row = boardArr.length - 1; row >= 0; row--) {
             for (int col = 0; col < boardArr[row].length; col++) {    
-                boardArr[row][col] = new Tile();
+                boardArr[row][col] = new Tile(this);
                 boardArr[row][col].setColor((col + row) % 2 == 0 ? Color.LIGHT_GRAY : Color.darkGray);
                 add(boardArr[row][col]);
                 
@@ -44,30 +46,33 @@ public class Board extends JPanel {
         }
         test();
     }
+    
     @Override
-    public void paint(Graphics g) {        
-        paintComponents(g);
+    public void paintComponent(Graphics g) {        
+        super.paintComponent(g);
     }
     
     // 'p' is in char - number format ex. "A1"
     public void goTo(String p) {
         moveNumber++;
         String move = KnightPosition + " -> " + p + "\n";
+        
         if (KnightPosition != null) {
             String numericPos = positionIndexMap.get(KnightPosition);
             boardArr[Integer.valueOf(numericPos.substring(1))][Integer.valueOf(numericPos.substring(0,1))].leave();
         }
+        
         KnightPosition = p;
         moveList.add(move);
         visit(positionIndexMap.get(p));
         System.out.println("Can move to :: " + getPossibleMoves());
+        repaint();
     }
     
     // Precondition :: 2 char string representing collumn - row of board 
     // ex. "00" = top left corner
     protected void visit(String index) {
-        
-        //System.out.println(index);
+    
         int collumn = Integer.valueOf(index.substring(0, 1));
         int row = Integer.valueOf(index.substring(1));
        
@@ -83,24 +88,40 @@ public class Board extends JPanel {
         for (int row = 0; row < boardArr.length; row++)
             for (int collumn = 0; collumn < boardArr[row].length; collumn++) {
                 Tile currentTile = boardArr[row][collumn];
-                if ((row == KnightY + 2 || row == KnightY - 2) &&
-                (collumn == KnightX + 1 || collumn == KnightX - 1)) {
-                    currentTile.isInRange(true);
-                    out.add("" + row + collumn);
+                if (currentTile.isVisitable()) {
+                    if ((row == KnightY + 2 || row == KnightY - 2) &&
+                    (collumn == KnightX + 1 || collumn == KnightX - 1)) {
+                        currentTile.isInRange(true);
+                        out.add("" + (char)(collumn + 65) + row);
+                    }
+                    else if ((collumn == KnightX + 2 || collumn == KnightX -2) &&
+                    (row == KnightY - 1 || row == KnightY + 1)) {
+                        currentTile.isInRange(true);
+                        out.add("" + (char)(collumn + 65) + (row + 1));
+                    }
+                    else currentTile.isInRange(false);
                 }
-                else if ((collumn == KnightX + 2 || collumn == KnightX -2) &&
-                (row == KnightY - 1 || row == KnightY + 1)) {
-                    currentTile.isInRange(true);
-                    out.add("" + row + collumn);
-                }
-                else currentTile.isInRange(false);
             }
+        
+        if (out.size() == 0)
+            stuck();        
         return out;
     }
 
     public void test() {
-        goTo("A5");
-        goTo("C3");
+        goTo("A1");
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        Component source = (Component)e.getSource();
+        char posX = (char)((source.getBounds().x / 100) + 65);
+        int posY = (this.getHeight() / 100) - (source.getBounds().y / 100);
+        goTo(posX + "" + posY);
+    }
+    public void stuck() {
+        System.out.println("stuck");
         System.out.println(moveList);
+        System.out.println("Moved : " + moveNumber + " times.");
+        System.out.println("You were " + ((double)moveNumber / ((this.getHeight() / 100) * (this.getWidth() / 100)) * 100) + "% complete!");
     }
 }
