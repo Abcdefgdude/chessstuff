@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import knight.*;
 
 @SuppressWarnings("serial")
 public class Tile extends JPanel {

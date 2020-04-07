@@ -28,13 +28,16 @@ public class Board extends JPanel implements ActionListener {
         moveList = new ArrayList<String>();
         positionIndexMap = new HashMap<String, String>();
         KnightPosition = null;
-
-        setLayout(new GridLayout(boardArr.length, boardArr[0].length));
-        setPreferredSize(new Dimension(w * 100, h * 100));
-        setMaximumSize(new Dimension(500, 500));
         
-        // Initiliazing tile array to fill boardArr and creating maps
+        Font font = new Font("Corbel", Font.PLAIN, 32);
+        setLayout(new GridLayout(boardArr.length + 1, boardArr[0].length + 1));
+        setPreferredSize(new Dimension(w * 100 + 20, h * 100 + 20));
+        
+        // Init board array / tiles and set row labels
         for (int row = boardArr.length - 1; row >= 0; row--) {
+            JLabel sideLabel = new JLabel("" + (row + 1) + "   ", SwingConstants.TRAILING);
+            sideLabel.setFont(font);
+            add(sideLabel);
             for (int col = 0; col < boardArr[row].length; col++) {    
                 boardArr[row][col] = new Tile(this);
                 boardArr[row][col].setColor((col + row) % 2 == 0 ? Color.LIGHT_GRAY : Color.darkGray);
@@ -44,6 +47,14 @@ public class Board extends JPanel implements ActionListener {
                 positionIndexMap.put(current, "" + col + "" + row);
             }
         }
+        // Bottom row of labels (A - x);
+        add(new JLabel());
+        for (int col = 0; col < boardArr[0].length; col++) {
+            JLabel bottomLabel = new JLabel("" + (char)(col + 65), SwingConstants.CENTER);
+            bottomLabel.setFont(font);
+            add(bottomLabel);
+        }
+        
         test();
     }
     
@@ -108,16 +119,46 @@ public class Board extends JPanel implements ActionListener {
         return out;
     }
 
+    public ArrayList<String> getPossibleMoves(int r, int c) {
+        ArrayList<String> out = new ArrayList<String>();
+
+        int KnightX = c;
+        int KnightY = r;
+
+        for (int row = 0; row < boardArr.length; row++)
+            for (int collumn = 0; collumn < boardArr[row].length; collumn++) {
+                Tile currentTile = boardArr[row][collumn];
+                if (currentTile.isVisitable()) {
+                    if ((row == KnightY + 2 || row == KnightY - 2) &&
+                    (collumn == KnightX + 1 || collumn == KnightX - 1)) {
+                        currentTile.isInRange(true);
+                        out.add("" + (char)(collumn + 65) + row);
+                    }
+                    else if ((collumn == KnightX + 2 || collumn == KnightX -2) &&
+                    (row == KnightY - 1 || row == KnightY + 1)) {
+                        currentTile.isInRange(true);
+                        out.add("" + (char)(collumn + 65) + (row + 1));
+                    }
+                    else currentTile.isInRange(false);
+                }
+            }
+        
+        if (out.size() == 0)
+            stuck();        
+        return out;
+    }
+
     public void test() {
         goTo("A1");
     }
 
     public void actionPerformed(ActionEvent e) {
         Component source = (Component)e.getSource();
-        char posX = (char)((source.getBounds().x / 100) + 65);
-        int posY = (this.getHeight() / 100) - (source.getBounds().y / 100);
+        char posX = (char)(((source.getBounds().x)/ 100) + 65);
+        int posY = ((this.getHeight() - 100) / 100) - (source.getBounds().y / 100);
         goTo(posX + "" + posY);
     }
+    
     public void stuck() {
         System.out.println("stuck");
         System.out.println(moveList);

@@ -1,15 +1,17 @@
 Board : 
-    Knight icon
-        Knight movement logic
+    Knight icon done
+        Knight movement logic done
     
     Path Tracing
-        Move count/ numbering tiles
+        Move count/ numbering tiles 
     
-    Interactive Tiles 
-        Mouse Listener
+    Interactive Tiles done
+        Mouse Listener done 
 
     Algorithm Controller
+    
 
-    Board Refactor
-        Board is array of tiles
-        
+    Board Refactor done 
+        Board is array of tiles done
+
+    board labels    
