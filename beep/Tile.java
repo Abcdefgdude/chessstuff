@@ -12,7 +12,7 @@ public class Tile extends JPanel {
     private boolean isSelected;
 
     private Color currentColor;
-    private static Color deadColor = Color.BLACK;
+    private static Color deadColor = new Color(40, 40, 40);
     private static Color canVisitColor = Color.GREEN;
     private static Color selectedColor = new Color(182, 252, 3);
     private Board parent;
@@ -56,11 +56,16 @@ public class Tile extends JPanel {
     public void visit() {
         add(new KnightIcon(), BorderLayout.CENTER);
         validate();
-        repaint();
     }
 
-    public void leave() {
+    public void leave(int n) {
         removeAll();
+        JLabel num = new JLabel("" + n);
+        num.setFont(new Font("Corbel", Font.BOLD, 40));
+        num.setForeground(Color.GRAY);
+        add(num, BorderLayout.CENTER);
+        validate();
+        repaint();
         wasVisited = true;
     }
     

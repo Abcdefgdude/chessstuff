@@ -65,14 +65,14 @@ public class Board extends JPanel implements ActionListener {
     
     // 'p' is in char - number format ex. "A1"
     public void goTo(String p) {
-        moveNumber++;
-        String move = KnightPosition + " -> " + p + "\n";
+        String move = KnightPosition + " -> " + p;
         
         if (KnightPosition != null) {
             String numericPos = positionIndexMap.get(KnightPosition);
-            boardArr[Integer.valueOf(numericPos.substring(1))][Integer.valueOf(numericPos.substring(0,1))].leave();
+            boardArr[Integer.valueOf(numericPos.substring(1))][Integer.valueOf(numericPos.substring(0,1))].leave(moveNumber);
         }
-        
+        moveNumber++;
+
         KnightPosition = p;
         moveList.add(move);
         visit(positionIndexMap.get(p));
@@ -83,10 +83,8 @@ public class Board extends JPanel implements ActionListener {
     // Precondition :: 2 char string representing collumn - row of board 
     // ex. "00" = top left corner
     protected void visit(String index) {
-    
         int collumn = Integer.valueOf(index.substring(0, 1));
         int row = Integer.valueOf(index.substring(1));
-       
         boardArr[row][collumn].visit();
     }
 
@@ -103,7 +101,7 @@ public class Board extends JPanel implements ActionListener {
                     if ((row == KnightY + 2 || row == KnightY - 2) &&
                     (collumn == KnightX + 1 || collumn == KnightX - 1)) {
                         currentTile.isInRange(true);
-                        out.add("" + (char)(collumn + 65) + row);
+                        out.add("" + (char)(collumn + 65) + (row + 1));
                     }
                     else if ((collumn == KnightX + 2 || collumn == KnightX -2) &&
                     (row == KnightY - 1 || row == KnightY + 1)) {
@@ -113,17 +111,16 @@ public class Board extends JPanel implements ActionListener {
                     else currentTile.isInRange(false);
                 }
             }
-        
         if (out.size() == 0)
             stuck();        
         return out;
     }
 
-    public ArrayList<String> getPossibleMoves(int r, int c) {
+    public ArrayList<String> getPossibleMoves(String pos) {
         ArrayList<String> out = new ArrayList<String>();
-
-        int KnightX = c;
-        int KnightY = r;
+        String numericPos = positionIndexMap.get(pos);
+        int KnightX = Integer.valueOf(numericPos.substring(0, 1));
+        int KnightY = Integer.valueOf(numericPos.substring(1));
 
         for (int row = 0; row < boardArr.length; row++)
             for (int collumn = 0; collumn < boardArr[row].length; collumn++) {
@@ -132,7 +129,7 @@ public class Board extends JPanel implements ActionListener {
                     if ((row == KnightY + 2 || row == KnightY - 2) &&
                     (collumn == KnightX + 1 || collumn == KnightX - 1)) {
                         currentTile.isInRange(true);
-                        out.add("" + (char)(collumn + 65) + row);
+                        out.add("" + (char)(collumn + 65) + (row + 1));
                     }
                     else if ((collumn == KnightX + 2 || collumn == KnightX -2) &&
                     (row == KnightY - 1 || row == KnightY + 1)) {
@@ -164,5 +161,17 @@ public class Board extends JPanel implements ActionListener {
         System.out.println(moveList);
         System.out.println("Moved : " + moveNumber + " times.");
         System.out.println("You were " + ((double)moveNumber / ((this.getHeight() / 100) * (this.getWidth() / 100)) * 100) + "% complete!");
+    }
+
+    public void drawPath() {
+        
+            // String numericPos = positionIndexMap.get();
+            // int KnightX = Integer.valueOf(numericPos.substring(0, 1));
+            // int KnightY = Integer.valueOf(numericPos.substring(1));
+
+    }
+
+    public void drawArrow() {
+
     }
 }

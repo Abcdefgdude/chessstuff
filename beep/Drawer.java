@@ -7,7 +7,7 @@ class Drawer extends JPanel {
     public static void main(final String[] args) {
         final JFrame frame = new JFrame("Chess time!");
         JPanel pane = new JPanel();
-        Board b = new Board(8, 8);
+        Board b = new Board(5, 5);
         pane.add(b);
         pane.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, new Color(209, 209, 209), Color.BLACK));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

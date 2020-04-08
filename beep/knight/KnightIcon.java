@@ -6,7 +6,7 @@ import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
 public class KnightIcon extends JPanel {
-    static String imageURL = "C:\\Users\\Ben\\Documents\\Factorio\\beep\\knight-chess-piece-silhouette-3.png";
+    static String imageURL = "C:\\Users\\Ben\\Documents\\Factorio\\beep\\knight\\knight-chess-piece-silhouette-3.png";
     static Image img;
     public KnightIcon() {   
         setPreferredSize(new Dimension(100, 100));
