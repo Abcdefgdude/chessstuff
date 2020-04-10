@@ -1,17 +1,17 @@
 Board : 
-    Knight icon done
-        Knight movement logic done
+    Knight icon DONE
+        Knight movement logic DONE
     
     Path Tracing
         Move count/ numbering tiles 
     
-    Interactive Tiles done
-        Mouse Listener done 
+    Interactive Tiles DONE
+        Mouse Listener DONE 
 
     Algorithm Controller
-    
+        ** add conflict resolver for  Warnsdorff **    
 
-    Board Refactor done 
-        Board is array of tiles done
+    Board Refactor DONE 
+        Board is array of tiles DONE
 
-    board labels    
+    board labels DONE

@@ -18,6 +18,7 @@ public class Tile extends JPanel {
     private Board parent;
 
     public Tile(Board b) {
+        
         wasVisited = false;
         isNull = false;
         inRange = false;
@@ -25,11 +26,13 @@ public class Tile extends JPanel {
         isSelected = false;
         parent = b;
 
+    }
+
+    public void initUI() {
+        
         addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (inRange) {
-                    // System.out.println(parent);
-                    // System.out.println("click in range");
                     ActionEvent ae = new ActionEvent(e.getComponent(), e.getID(), e.paramString());
                     parent.actionPerformed(ae);
                 }

@@ -12,8 +12,7 @@ public class Board extends JPanel implements ActionListener {
     ArrayList<String> moveList;
     HashMap<String, String> positionIndexMap;
     String KnightPosition;
-    int width;
-    int height;
+
     public Board() {
         initBoard(8, 8);
     }
@@ -31,31 +30,15 @@ public class Board extends JPanel implements ActionListener {
 
     public void initBoard(int w, int h) {
         
-        width = w;
-        height = h;
-
-        boardArr = new Tile[height][width];
+        boardArr = new Tile[h][w];
         moveNumber = 0;
         moveList = new ArrayList<String>();
         positionIndexMap = new HashMap<String, String>();
         KnightPosition = null;
         
-
-        for (int row = boardArr.length - 1; row >= 0; row--) 
-            for (int col = 0; col < boardArr[row].length; col++) {    
-                boardArr[row][col] = new Tile(this);
-                String current = ("" + (char)(65 + col) + (row + 1));
-                positionIndexMap.put(current, "" + col + "" + row);
-            }
-
-    }
-    
-    public void initUI() {
-        
-        // Bottom row of labels (A - x);
         Font font = new Font("Corbel", Font.PLAIN, 32);
         setLayout(new GridLayout(boardArr.length + 1, boardArr[0].length + 1));
-        setPreferredSize(new Dimension(width * 100 + 100, height * 100 + 100));
+        setPreferredSize(new Dimension(w * 100 + 100, h * 100 + 100));
         
         // Init board array / tiles and set row labels
         for (int row = boardArr.length - 1; row >= 0; row--) {
@@ -63,13 +46,15 @@ public class Board extends JPanel implements ActionListener {
             sideLabel.setFont(font);
             add(sideLabel);
             for (int col = 0; col < boardArr[row].length; col++) {    
-                boardArr[row][col].initUI();
+                boardArr[row][col] = new Tile(this);
                 boardArr[row][col].setColor((col + row) % 2 == 0 ? Color.LIGHT_GRAY : Color.darkGray);
                 add(boardArr[row][col]);
-
+                
+                String current = ("" + (char)(65 + col) + (row + 1));
+                positionIndexMap.put(current, "" + col + "" + row);
             }
         }
-
+        // Bottom row of labels (A - x);
         add(new JLabel());
         for (int col = 0; col < boardArr[0].length; col++) {
             JLabel bottomLabel = new JLabel("" + (char)(col + 65), SwingConstants.CENTER);
@@ -77,6 +62,7 @@ public class Board extends JPanel implements ActionListener {
             add(bottomLabel);
         }
     }
+
 
     public void test() {
         goTo("A1");
@@ -184,7 +170,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public boolean completed() {
-        return moveNumber == height * width;
+        return ((double)moveNumber / (((this.getHeight() - 20) / 100) * ((this.getWidth() - 20) / 100))) * 100 == 100.0;
     }
 
     public String toString() {
