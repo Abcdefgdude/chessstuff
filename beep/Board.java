@@ -8,12 +8,17 @@ import java.awt.event.*;
 public class Board extends JPanel implements ActionListener {
     
     Tile[][] boardArr;
-    int moveNumber;
+    private int width;
+    private int height;
+    private final int tileSize = 100;
+    
     ArrayList<String> moveList;
-    HashMap<String, String> positionIndexMap;
+    int moveNumber;
     String KnightPosition;
-    int width;
-    int height;
+    HashMap<String, String> positionIndexMap;
+
+    private static String[] knightRange = {"0102", "0201", "01-2", "02-1", "-102", "-201", "-1-2", "-2-1"};
+    
     public Board() {
         initBoard(8, 8);
     }
@@ -39,7 +44,6 @@ public class Board extends JPanel implements ActionListener {
         moveList = new ArrayList<String>();
         positionIndexMap = new HashMap<String, String>();
         KnightPosition = null;
-        
 
         for (int row = boardArr.length - 1; row >= 0; row--) 
             for (int col = 0; col < boardArr[row].length; col++) {    
@@ -47,15 +51,13 @@ public class Board extends JPanel implements ActionListener {
                 String current = ("" + (char)(65 + col) + (row + 1));
                 positionIndexMap.put(current, "" + col + "" + row);
             }
-
     }
     
     public void initUI() {
         
-        // Bottom row of labels (A - x);
         Font font = new Font("Corbel", Font.PLAIN, 32);
         setLayout(new GridLayout(boardArr.length + 1, boardArr[0].length + 1));
-        setPreferredSize(new Dimension(width * 100 + 100, height * 100 + 100));
+        setPreferredSize(new Dimension(width * tileSize + tileSize, height * tileSize + tileSize));
         
         // Init board array / tiles and set row labels
         for (int row = boardArr.length - 1; row >= 0; row--) {
@@ -66,10 +68,9 @@ public class Board extends JPanel implements ActionListener {
                 boardArr[row][col].initUI();
                 boardArr[row][col].setColor((col + row) % 2 == 0 ? Color.LIGHT_GRAY : Color.darkGray);
                 add(boardArr[row][col]);
-
             }
         }
-
+        // Bottom row of labels (A - x);
         add(new JLabel());
         for (int col = 0; col < boardArr[0].length; col++) {
             JLabel bottomLabel = new JLabel("" + (char)(col + 65), SwingConstants.CENTER);
@@ -86,107 +87,98 @@ public class Board extends JPanel implements ActionListener {
         goTo(pos);
     }
     
-    @Override
-    public void paintComponent(Graphics g) {        
-        super.paintComponent(g);
-    }
-    
-    // 'p' is in char - number format ex. "A1"
+    /* 'p' is in char - number format ex. "A1"*/    
     public void goTo(String p) {
         String move = KnightPosition + " -> " + p;
         
         if (KnightPosition != null) {
             String numericPos = positionIndexMap.get(KnightPosition);
             boardArr[Integer.valueOf(numericPos.substring(1))][Integer.valueOf(numericPos.substring(0,1))].leave(moveNumber);
+            moveList.add(move);
         }
         moveNumber++;
 
         KnightPosition = p;
-        moveList.add(move);
         visit(positionIndexMap.get(p));
         getPossibleMoves();
         repaint();
     }
     
-    // Precondition :: 2 char string representing collumn - row of board 
-    // ex. "00" = top left corner
+    /* Precondition :: 2 char string representing collumn - row of board 
+    ex. "00" = top left corner */
     protected void visit(String index) {
         int collumn = Integer.valueOf(index.substring(0, 1));
         int row = Integer.valueOf(index.substring(1));
         boardArr[row][collumn].visit();
     }
-
-    public ArrayList<String> getPossibleMoves() {
-        ArrayList<String> out = new ArrayList<String>();
-        String numericPos = positionIndexMap.get(KnightPosition);
-        int KnightX = Integer.valueOf(numericPos.substring(0, 1));
-        int KnightY = Integer.valueOf(numericPos.substring(1));
-
-        for (int row = Math.max(0, KnightY - 5); row < Math.min(boardArr.length, KnightY + 5); row++)
-            for (int collumn = Math.max(0, KnightX - 5); collumn < Math.min(boardArr[row].length, KnightX + 5); collumn++) {
-                Tile currentTile = boardArr[row][collumn];
-                if (currentTile.isVisitable()) {
-                    if ((row == KnightY + 2 || row == KnightY - 2) &&
-                    (collumn == KnightX + 1 || collumn == KnightX - 1)) {
-                        currentTile.isInRange(true);
-                        out.add("" + (char)(collumn + 65) + (row + 1));
-                    }
-                    else if ((collumn == KnightX + 2 || collumn == KnightX -2) &&
-                    (row == KnightY - 1 || row == KnightY + 1)) {
-                        currentTile.isInRange(true);
-                        out.add("" + (char)(collumn + 65) + (row + 1));
-                    }
-                    else currentTile.isInRange(false);
-                }
-            }
-        if (out.size() == 0)
-            stuck();        
-        return out;
-    }
-
+    /* 'pos' is in char format */
     public ArrayList<String> getPossibleMoves(String pos) {
         ArrayList<String> out = new ArrayList<String>();
+        
         String numericPos = positionIndexMap.get(pos);
         int KnightX = Integer.valueOf(numericPos.substring(0, 1));
         int KnightY = Integer.valueOf(numericPos.substring(1));
-
-        for (int row = Math.max(0, KnightY - 5); row < Math.min(boardArr.length, KnightY + 5); row++)
-            for (int collumn = Math.max(0, KnightX - 5); collumn < Math.min(boardArr[row].length, KnightX + 5); collumn++) {
-                Tile currentTile = boardArr[row][collumn];
-                if (currentTile.isVisitable()) {
-                    if ((row == KnightY + 2 || row == KnightY - 2) &&
-                    (collumn == KnightX + 1 || collumn == KnightX - 1)) {
-                        currentTile.isInRange(true);
-                        out.add("" + (char)(collumn + 65) + (row + 1));
-                    }
-                    else if ((collumn == KnightX + 2 || collumn == KnightX -2) &&
-                    (row == KnightY - 1 || row == KnightY + 1)) {
-                        currentTile.isInRange(true);
-                        out.add("" + (char)(collumn + 65) + (row + 1));
-                    }
-                    else currentTile.isInRange(false);
+        
+        for (String n : knightRange) {
+            int dx = KnightX + Integer.parseInt(n.substring(0, 2));
+            int dy = KnightY + Integer.parseInt(n.substring(2));
+            if (isValid(dx, dy))
+                if (boardArr[dy][dx].isVisitable()) {
+                    boardArr[dy][dx].isInRange(true);
+                    out.add("" + (char)(dx + 65) + (dy + 1));
                 }
-            }
+        }
         return out;
+    }
+    
+    public ArrayList<String> getPossibleMoves() {
+        return getPossibleMoves(KnightPosition);
+    }
+
+    public void clear() {
+        for (Tile[] arr : boardArr)
+            for (Tile t : arr)
+                t.isInRange(false);            
     }
 
     public void actionPerformed(ActionEvent e) {
         Component source = (Component)e.getSource();
-        char posX = (char)(((source.getBounds().x - 100)/ 100) + 65);
-        int posY = ((this.getHeight()) / 100) - (source.getBounds().y / 100) - 1;
+        char posX = (char)(((source.getBounds().x - tileSize)/ tileSize) + 65);
+        int posY = ((this.getHeight()) / tileSize) - (source.getBounds().y / tileSize) - 1;
+        clear();
         goTo(posX + "" + posY);
     }
     
-    public void stuck() {
-        // System.out.println(moveList);
-        // System.out.println("Moved : " + moveNumber + " times.");
-        // System.out.print(moveNumber + " / ");
+    /* returns if position at dx, dy is within the bounds of the board */
+    public boolean isValid(int dx, int dy) {
+        return !((dx < 0 || dy < 0) || (dx >= width || dy >= height));
     }
 
     public boolean completed() {
         return moveNumber == height * width;
     }
+    
+    @Override
+    public void paintComponent(Graphics g) {        
+        super.paintComponent(g);
+    }   
 
+    public ArrayList<String> getMoveList() {
+        return moveList;
+    }
+
+    public int getTileSize() {
+        return tileSize;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public HashMap<String, String> getPositionMap() {
+        return positionIndexMap;
+    }
+    @Override
     public String toString() {
         String out = "";
         out += "Moves : " + moveNumber + "\n";

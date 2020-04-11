@@ -7,6 +7,7 @@ public class Warnsdorff extends Algorithm {
         this.b = b;
     }
     // returns the tile that has the fewest options 
+    
     public String getNextMove(ArrayList<String> moves) {
         if (moves.size() == 0)
             return "";
@@ -21,6 +22,7 @@ public class Warnsdorff extends Algorithm {
              i++;
         return nextMoves.get(i);
     }
+    // resolves situation when there are two equal situations
 
     public String resolve(String pos1, String pos2) {
         int pos1Sum = sumOfPossibilites(pos1);
@@ -29,11 +31,11 @@ public class Warnsdorff extends Algorithm {
             return pos1;
         else return pos2;
     }
-
+    // helper method for resolve
+    
     public int sumOfPossibilites(String pos) {
         ArrayList<String> moves = b.getPossibleMoves(pos);
         int sum = 0;
-
         for (String m : moves) 
             sum += b.getPossibleMoves(m).size();
         return sum;

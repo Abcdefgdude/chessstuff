@@ -14,10 +14,8 @@ public class Controller extends JPanel {
     JPanel main;
 
     public Controller(Board bb) {
-        
         b = bb;
         chooser = new MyComboBox(bb);
-
     }
 
     public void go() {
@@ -27,16 +25,15 @@ public class Controller extends JPanel {
         else {
             test.stop();
         }
+        b.clear();
     }
+    
     public void auto() {
-        // long timeStart = System.currentTimeMillis();
         String next = chooser.go(b.getPossibleMoves());
         while (!next.equals("")) {
             b.goTo(next);
             next = chooser.go(b.getPossibleMoves());
-            //System.out.println(next);
         }
-        // System.out.println("auto done in :: " + (timeStart - System.currentTimeMillis()) + "!");
     }
 
     public boolean isSuccess() {
@@ -44,14 +41,6 @@ public class Controller extends JPanel {
     }
     
     public void start() {
-/*         test = new Timer(1, new ActionListener() { 
-            public void actionPerformed(ActionEvent e) {
-                go();
-                // b.getPossibleMoves();
-            }
-        });
-        
-        test.start(); */
         auto();
     }
     
@@ -71,7 +60,14 @@ public class Controller extends JPanel {
         
         moveNumber = new JLabel("" + 0);
         moveNumber.setText("" + i);
-
+        
+        test = new Timer(1, new ActionListener() { 
+            public void actionPerformed(ActionEvent e) {
+                go();
+                // b.getPossibleMoves();
+            }
+        });
+        
         button1.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) {
                 go();
@@ -99,6 +95,5 @@ public class Controller extends JPanel {
         main.add(moveNumber);
         main.add(chooser);
     }
-
 }
 

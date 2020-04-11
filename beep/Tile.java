@@ -12,9 +12,9 @@ public class Tile extends JPanel {
     private boolean isSelected;
 
     private Color currentColor;
-    private static Color deadColor = new Color(40, 40, 40);
-    private static Color canVisitColor = Color.GREEN;
-    private static Color selectedColor = new Color(182, 252, 3);
+    private static Color deadColor;
+    private static Color canVisitColor;
+    private static Color selectedColor;
     private Board parent;
 
     public Tile(Board b) {
@@ -22,14 +22,17 @@ public class Tile extends JPanel {
         wasVisited = false;
         isNull = false;
         inRange = false;
-        currentColor = Color.BLACK;
         isSelected = false;
         parent = b;
 
     }
-
+    // this MUST be called before trying to draw a tile object
     public void initUI() {
-        
+        currentColor = Color.BLACK;
+        selectedColor = new Color(182, 252, 3);
+        canVisitColor = Color.GREEN;
+        deadColor = new Color(40, 40, 40);
+
         addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (inRange) {
