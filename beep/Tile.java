@@ -11,6 +11,7 @@ public class Tile extends JPanel {
     private boolean inRange;
     private boolean isSelected;
 
+    private Color highlightColor;
     private Color currentColor;
     private static Color deadColor;
     private static Color canVisitColor;
@@ -28,11 +29,10 @@ public class Tile extends JPanel {
     }
     // this MUST be called before trying to draw a tile object
     public void initUI() {
-        currentColor = Color.BLACK;
-        selectedColor = new Color(182, 252, 3);
-        canVisitColor = Color.GREEN;
-        deadColor = new Color(40, 40, 40);
 
+        selectedColor = new Color(182, 252, 3);
+        canVisitColor = new Color(140, 237, 95);
+        deadColor = new Color(40, 40, 40);
         addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (inRange) {
@@ -57,17 +57,23 @@ public class Tile extends JPanel {
 
     public void setColor(Color c) {
         currentColor = c;
+        // repaint();
     }
-
+    
+    public void setHighlight(Color c) {
+        highlightColor = c;
+    }
     public void visit() {
-        add(new KnightIcon(), BorderLayout.CENTER);
+        KnightIcon knight = new KnightIcon();
+        knight.setPreferredSize(new Dimension(parent.getTileSize(), parent.getTileSize()));
+        add(knight, BorderLayout.CENTER);
         validate();
     }
 
     public void leave(int n) {
         removeAll();
         JLabel num = new JLabel("" + n);
-        num.setFont(new Font("Corbel", Font.BOLD, 40));
+        num.setFont(new Font("Corbel", Font.BOLD, parent.getTileSize() / 2));
         num.setForeground(Color.GRAY);
         add(num, BorderLayout.CENTER);
         validate();
@@ -84,6 +90,8 @@ public class Tile extends JPanel {
     }
     
     public Color getState() {
+        if (highlightColor != null)
+            return highlightColor;
         if (!isVisitable())
             return deadColor;
         if (inRange)
@@ -94,6 +102,7 @@ public class Tile extends JPanel {
     }
     
     public void paintComponent(Graphics g) {
+        // super.paintComponent(g);
         g.setColor(getState());
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
     }

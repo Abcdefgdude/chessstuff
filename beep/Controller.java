@@ -10,7 +10,6 @@ public class Controller extends JPanel {
     private Board b;
     MyComboBox chooser;
     Timer test;
-    JLabel moveNumber;
     JPanel main;
 
     public Controller(Board bb) {
@@ -47,7 +46,6 @@ public class Controller extends JPanel {
     public void initUI() {
         JPanel main = new JPanel();
         add(main);
-        int i = 0;
         
         JButton button1 = new JButton("auto-complete");
         JButton button2 = new JButton("next move");
@@ -57,9 +55,6 @@ public class Controller extends JPanel {
         main.setLayout(new FlowLayout());
         main.setPreferredSize(new Dimension(b.getWidth(), 150));
         main.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED, new Color(209, 209, 209), Color.BLACK));
-        
-        moveNumber = new JLabel("" + 0);
-        moveNumber.setText("" + i);
         
         test = new Timer(1, new ActionListener() { 
             public void actionPerformed(ActionEvent e) {
@@ -92,7 +87,6 @@ public class Controller extends JPanel {
         main.add(button1);
         main.add(button2);
         main.add(button3);
-        main.add(moveNumber);
         main.add(chooser);
     }
 }
