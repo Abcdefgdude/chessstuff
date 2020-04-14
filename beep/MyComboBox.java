@@ -10,13 +10,14 @@ public class MyComboBox extends JComboBox<Algorithm> {
         b = bb;
         Algorithm algo1 = new Warnsdorff(b);
         addItem(algo1);
+        Algorithm algo2 = new RandomWarnsdorff(b);
+        addItem(algo2);
         addActionListener(new ActionListener()  {
             public void actionPerformed(ActionEvent e) {
                 current = (Algorithm) getSelectedItem();
             }
         });
-        setSelectedItem(algo1);
-    
+        setSelectedItem(algo2);
     }
 
     

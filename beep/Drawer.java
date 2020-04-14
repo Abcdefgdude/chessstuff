@@ -18,9 +18,10 @@ class Drawer {
     public static void main(final String[] args) {
         Drawer d = new Drawer();
         // d.Test(6, 6);
-        d.createAndShowGUI(5, 5);
-        // d.bigTest(6, 6, 10, 10);
+        // d.createAndShowGUI(3, 8);
+        // d.bigRNGTest(30, 30, 35, 35);
         // d.bigTest(3, 3, 5, 5);
+        d.RNGTest(6, 6, 10, 10, "A01", 30);
     }
 
     public void createAndShowGUI(int w, int h) {
@@ -33,7 +34,7 @@ class Drawer {
         JPanel controlPanel = new JPanel();
         JPanel buttonPanel = createButtonPanel();
         boardPane.setBackground(Color.WHITE);
-        b = new Board(w, h, "C01");
+        b = new Board(w, h, "A04");
         // b = new Board(w, h);
         b.initUI();
         boardPane.add(b);
@@ -76,13 +77,15 @@ class Drawer {
                 Drawer draw = new Drawer();
                 draw.initQuietTest(w, h, current);                
                 try {
-                    wait(10);
+                    // wait(5);
                 }
                 catch (Exception e) {
                     System.out.println("heck :(");
                 }
                 if (!draw.c.isSuccess())
                     fails.add(current);
+                // else if (draw.b.isClosed())
+                    // System.out.println("Closed tour on board size : " + w + " x " + h + " and starting position : " + current);
             }
         if (fails.size() == w * h)
             System.out.println("impossible with board size : " + w + " x " + h);
@@ -99,6 +102,84 @@ class Drawer {
                 Test(w, h);
         System.out.println("done!");
     }
+    
+    /** Tests all starting positions on boards in range from w1 x h1 -> w2 x h2
+     *  Uses random selection, tests each board 10 times */  
+    public void bigRNGTest(int w1, int h1, int w2, int h2) {
+        ArrayList<String> data = new ArrayList<String>();
+        String percents = "";
+        String boards = "";
+        int successPercent = 0;
+        int total = 0;
+        for (int w = w1; w <= w2; w++)
+            for (int h = h1; h <= h2; h++) {
+                for (int i = 0; i < 10; i++) {
+                    successPercent = 100 - (int)((Test(w, h).size() / (double)(w * h)) * 100);
+                    // System.out.println(successPercent);
+                    if (successPercent == 100) {
+                        System.out.println("skipping...");
+                        total = 100 * 10;
+                        break;
+                    }
+                    total += successPercent;
+                    System.out.println("total : " + total);
+                }
+                // System.out.println(total);
+                total /= 10;
+                data.add("" + total + "% percent of trials at board " + w + " x " + h + " were successful");
+                percents += total + "\n";
+                boards += w + " x " + h + "\n"; 
+                total = 0;  
+
+            }
+        System.out.println(data);
+        Writer w = new Writer();
+        w.toTxt(percents + boards);
+        System.out.println("done!");
+    }
+    /** Tests starting position start on boards in range from w1 x h1 -> w2 x h2
+     *  Uses random selection, tests each board t times */  
+    public void RNGTest(int w1, int h1, int w2, int h2, String start, int t) {
+        ArrayList<String> data = new ArrayList<String>();
+        String percents = "";
+        String boards = "";
+        int total = 0;
+        for (int w = w1; w <= w2; w++)
+            for (int h = h1; h <= h2; h++) {
+                for (int i = 0; i < t; i++) {
+                    total += TestStart(w, h, start) ? 100 : 0;
+                    // System.out.println("total : " + total);
+                }
+                // System.out.println(total);
+                total /= t;
+                data.add("" + total + "% percent of trials at board " + w + " x " + h + " were successful");
+                percents += total + "\n";
+                boards += w + " x " + h + "\n"; 
+                total = 0;  
+
+            }
+        System.out.println(data);
+        Writer w = new Writer();
+        w.toTxt(percents + boards);
+        System.out.println("done!");
+    }
+
+
+    /**
+     * Tests knight tour on board size wxh from starting position start
+     * @param w board width
+     * @param h board height
+     * @param start starting position, in "A01" format
+     * @return if starting position was successful
+     */
+    public boolean TestStart(int w, int h, String start) {
+        Drawer draw = new Drawer();
+        draw.initQuietTest(w, h, start);                
+        return draw.c.isSuccess();
+        
+    }
+    
+    
     
     public JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel();
