@@ -55,11 +55,19 @@ public class Tile extends JPanel {
         });
     }
 
+    
+    /** 
+     * @param c
+     */
     public void setColor(Color c) {
         currentColor = c;
         // repaint();
     }
     
+    
+    /** 
+     * @param c
+     */
     public void setHighlight(Color c) {
         highlightColor = c;
     }
@@ -70,25 +78,49 @@ public class Tile extends JPanel {
         validate();
     }
 
+    
+    /** 
+     * @param n
+     */
     public void leave(int n) {
         removeAll();
+        drawLabel(n);
+        wasVisited = true;
+    }
+
+    
+    /** 
+     * @param n
+     */
+    public void drawLabel(int n) {
         JLabel num = new JLabel("" + n);
         num.setFont(new Font("Corbel", Font.BOLD, parent.getTileSize() / 2));
         num.setForeground(Color.GRAY);
         add(num, BorderLayout.CENTER);
         validate();
         repaint();
-        wasVisited = true;
     }
     
+    
+    /** 
+     * @return boolean
+     */
     public boolean isVisitable() {
         return !(isNull || wasVisited);
     }
 
+    
+    /** 
+     * @param in
+     */
     public void isInRange(boolean in) {
         inRange = in;
     }
     
+    
+    /** 
+     * @return Color
+     */
     public Color getState() {
         if (highlightColor != null)
             return highlightColor;
@@ -101,6 +133,10 @@ public class Tile extends JPanel {
         return currentColor;
     }
     
+    
+    /** 
+     * @param g
+     */
     public void paintComponent(Graphics g) {
         // super.paintComponent(g);
         g.setColor(getState());

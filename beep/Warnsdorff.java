@@ -37,7 +37,7 @@ public class Warnsdorff extends Algorithm {
         else if (pos1Sum == pos2Sum) {
             int bs1 = bigSum(pos1);
             int bs2 = bigSum(pos2);
-            return bs1 > bs2 ? pos1 : pos2;
+            return bs1 < bs2 ? pos1 : pos2;
         }
         else return pos2;
     }

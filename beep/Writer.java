@@ -1,11 +1,11 @@
 import java.io.*;
-import java.util.*;
+import java.time.*;
 
 public class Writer {
     FileWriter fw;
     File file;
     public Writer() {
-        file = new File("C:\\Users\\Ben\\Desktop\\Math IA\\data\\" + "A" + ".txt");
+        file = new File("C:\\Users\\Ben\\Desktop\\Math IA\\data\\" + LocalDateTime.now().getHour() + "-" + LocalDateTime.now().getMinute() + "-" + LocalDateTime.now().getSecond() + ".txt");
         try {
             if (file.createNewFile())
                 System.out.println("File created succesfully!");

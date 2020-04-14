@@ -15,9 +15,11 @@ public class MyComboBox extends JComboBox<Algorithm> {
         addActionListener(new ActionListener()  {
             public void actionPerformed(ActionEvent e) {
                 current = (Algorithm) getSelectedItem();
+                // System.out.println(current);
             }
         });
-        setSelectedItem(algo2);
+        setSelectedItem(algo1);
+        // setSelectedItem(algo2);
     }
 
     

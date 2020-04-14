@@ -15,15 +15,25 @@ class Drawer {
     private int width;
     private int height;
     
+    
+    /** 
+     * @param args
+     */
     public static void main(final String[] args) {
         Drawer d = new Drawer();
         // d.Test(6, 6);
-        // d.createAndShowGUI(3, 8);
-        // d.bigRNGTest(30, 30, 35, 35);
+        d.createAndShowGUI(6, 4);
+        // d.bigRNGTest(6, 3, 6, 3);
         // d.bigTest(3, 3, 5, 5);
-        d.RNGTest(6, 6, 10, 10, "A01", 30);
+        // d.RNGTest(5, 3, 5, 3, "A001", 100);
+        // d.RNGTestSquare(150, 200, 30);
     }
 
+    
+    /** 
+     * @param w
+     * @param h
+     */
     public void createAndShowGUI(int w, int h) {
         
         width = w;
@@ -34,7 +44,7 @@ class Drawer {
         JPanel controlPanel = new JPanel();
         JPanel buttonPanel = createButtonPanel();
         boardPane.setBackground(Color.WHITE);
-        b = new Board(w, h, "A04");
+        b = new Board(w, h, "A002");
         // b = new Board(w, h);
         b.initUI();
         boardPane.add(b);
@@ -60,20 +70,29 @@ class Drawer {
         frame.setVisible(true);
     }
     
-    /* lightweight memory version with no visual elements */
+    /** lightweight memory version with no visual elements
+     * @see #createAndShowGUI
+     */
     public void initQuietTest(int w, int h, String start) {
         this.b = new Board(w, h, start);
         this.c = new Controller(this.b);
         this.c.start();
     }
     
+    
+    /** 
+     * @param w
+     * @param h
+     * @return ArrayList<String>
+     */
     /* tests all starting positions on a board of W x H dimensions */
     public synchronized ArrayList<String> Test(int w, int h) {
         ArrayList<String> fails = new ArrayList<String>();
         
         for (int i = 0; i < w; i++)
             for (int j = 0; j < h; j++) {
-                String current = "" + (char)(i + 65) + (j + 1 >= 10 ? "" + (j + 1) : "0" + (j + 1));
+                int y = j + 1;
+                String current = "" + (char)(i + 65) + (y >= 100 ? "" + y : y >= 10 ? "0" + y : "00" + y);
                 Drawer draw = new Drawer();
                 draw.initQuietTest(w, h, current);                
                 try {
@@ -95,6 +114,13 @@ class Drawer {
         return fails;
     }
     
+    
+    /** 
+     * @param w1
+     * @param h1
+     * @param w2
+     * @param h2
+     */
     /* tests all starting positions on boards in range from w1 x h1 -> w2 x h2 */
     public void bigTest(int w1, int h1, int w2, int h2) {
         for (int w = w1; w <= w2; w++)
@@ -104,7 +130,7 @@ class Drawer {
     }
     
     /** Tests all starting positions on boards in range from w1 x h1 -> w2 x h2
-     *  Uses random selection, tests each board 10 times */  
+     *  Uses random algorithm, tests each board 10 times */  
     public void bigRNGTest(int w1, int h1, int w2, int h2) {
         ArrayList<String> data = new ArrayList<String>();
         String percents = "";
@@ -137,8 +163,9 @@ class Drawer {
         w.toTxt(percents + boards);
         System.out.println("done!");
     }
+
     /** Tests starting position start on boards in range from w1 x h1 -> w2 x h2
-     *  Uses random selection, tests each board t times */  
+     *  Uses random algorithm, tests each board t times */  
     public void RNGTest(int w1, int h1, int w2, int h2, String start, int t) {
         ArrayList<String> data = new ArrayList<String>();
         String percents = "";
@@ -150,17 +177,42 @@ class Drawer {
                     total += TestStart(w, h, start) ? 100 : 0;
                     // System.out.println("total : " + total);
                 }
-                // System.out.println(total);
+                System.out.println("" + total + "% percent of trials at board " + w + " x " + h + " were successful");
                 total /= t;
-                data.add("" + total + "% percent of trials at board " + w + " x " + h + " were successful");
+                data.add("" + total + "% percent of trials at board " + w + " x " + h + " were successful \n");
                 percents += total + "\n";
                 boards += w + " x " + h + "\n"; 
                 total = 0;  
-
             }
         System.out.println(data);
         Writer w = new Writer();
         w.toTxt(percents + boards);
+        System.out.println("done!");
+    }
+    
+    /** Tests random start position in range from w1 x w1 -> w2 x w2 
+     *  Uses random algorithm, tests each board t times */  
+    public void RNGTestSquare(int w1, int w2, int t) {
+        String percents = "";
+        double total = 0;
+        for (int w = w1; w <= w2; w +=2) {
+            for (int i = 0; i < t; i++) {
+                int y = (int)(Math.random() * w + 1);
+                // System.out.println("y : " + y);
+                String strY = y >= 100 ? "" + y : y >= 10 ? "0" + y : "00" + y; 
+                String strX = "" + (char)((int)(Math.random() * width + 65)); 
+                String start = strX + strY;
+                // System.out.println("start : " + start);
+                total += TestStart(w, w, start) ? 100 : 0;
+
+            }
+            total /= t;
+            System.out.println("" + total + "% percent of trials at board " + w + " x " + w + " were successful");
+            percents += total + "\n";
+            total = 0;  
+        }
+        Writer writer = new Writer();
+        writer.toTxt(percents);
         System.out.println("done!");
     }
 
@@ -178,8 +230,6 @@ class Drawer {
         return draw.c.isSuccess();
         
     }
-    
-    
     
     public JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel();
@@ -210,8 +260,9 @@ class Drawer {
         JButton button4 = new JButton("HIGHLIGHT");
         button4.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                ArrayList<String> highlight = Test(width, height);
-                b.highlightTiles(highlight, new Color(201, 72, 62));
+                /* ArrayList<String> highlight = Test(width, height);
+                b.highlightTiles(highlight, new Color(201, 72, 62)); */
+                // b.highlightWeights();
             }
         });
         
